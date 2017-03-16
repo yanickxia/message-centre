@@ -6,17 +6,27 @@
 
 let http = require('http');
 let queryString = require('querystring');
-let logger = require('morgan');
+let leancloudService = require('./leancloudService');
 
 let mailService = {};
 
+/**
+ * query a mail status
+ * @param id
+ * @returns status
+ */
 mailService.findOne = function (id) {
     return {status: 'OK'}
 };
 
+
+/**
+ * send a mail
+ * @param param
+ */
 mailService.sendMail = function (param) {
 
-    let postData = queryString.stringify({
+    const postData = queryString.stringify({
         apiUser: process.env.SEND_CLOUD_API_USER,
         apiKey: process.env.SEND_CLOUD_API_KEY,
         from: param.from,
@@ -27,7 +37,7 @@ mailService.sendMail = function (param) {
 
     console.log('send message to', postData);
 
-    let options = {
+    const options = {
         hostname: 'api.sendcloud.net',
         port: 80,
         path: '/apiv2/mail/send',
@@ -41,7 +51,9 @@ mailService.sendMail = function (param) {
 
     let postRequest = http.request(options, (res) => {
         res.on('data', (chunk) => {
-            console.log(`BODY: ${chunk}`);
+            let data = JSON.parse(chunk);
+            data['id'] = param.id;
+            leancloudService.create(data);
         });
     });
 
