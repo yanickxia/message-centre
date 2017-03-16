@@ -1,0 +1,9 @@
+version: '2'
+services:
+  mc:
+    build: .
+    environment:
+      SEND_CLOUD_API_USER: 111
+      SEND_CLOUD_API_KEY: 111
+    ports:
+      - "3000:3000"
