@@ -50,11 +50,17 @@ mailService.sendMail = function (param) {
     };
 
     let postRequest = http.request(options, (res) => {
+
+        let bodyChunks = [];
         res.on('data', (chunk) => {
-            let data = JSON.parse(chunk);
+            bodyChunks.push(chunk);
+
+        }).on('end', () => {
+            let data = JSON.parse(bodyChunks);
             data['id'] = param.id;
+            delete data['info'];
             leancloudService.create(data);
-        });
+        })
     });
 
     postRequest.write(postData);

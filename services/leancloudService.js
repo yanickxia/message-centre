@@ -14,20 +14,20 @@ let leancloudService = {};
 
 leancloudService.create = function (postData) {
 
-    console.log('create class leadcloud ', postData);
+    let endStr = JSON.stringify(postData);
+    console.log('create class leadcloud ', endStr);
 
     const options = {
         hostname: HOST,
         port: PORT,
-        path: CREATE_CLASSES + "MailStatus",
+        path: CREATE_CLASSES + "mailStatus",
         method: 'POST',
         headers: {
             'X-LC-Id': process.env.LEAD_CLOUD_LC_ID,
             'X-LC-Key': process.env.LEAD_CLOUD_LC_KEY,
-            'Content-Type': 'application/json;charset=utf-8',
-            'Content-Length': Buffer.byteLength(postData)
-        },
-
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(endStr)
+        }
     };
 
     let postRequest = http.request(options, (res) => {
@@ -36,8 +36,8 @@ leancloudService.create = function (postData) {
         });
     });
 
-    postRequest.write(queryString.stringify(postData));
-    postRequest.end();
+    postRequest.end(endStr);
+
 };
 
 module.exports = leancloudService;
